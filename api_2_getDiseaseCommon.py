@@ -12,6 +12,15 @@ import json
 # 定义请求的 URL
 url = 'https://transport.cloudbrain2.pcl.ac.cn/mt/gateway/repair/diseaseCommon/getDiseaseCommon'
 
+# 读取保存的登录结果
+try:
+    with open('login_result.json', 'r', encoding='utf-8') as json_file:
+        login_data = json.load(json_file)
+        result = login_data['result']  # 提取 result
+except FileNotFoundError:
+    print("Login result file not found.")
+    exit()  # 如果文件未找到，则终止程序
+
 # 定义请求参数 (URL 查询参数)
 params = {
     '_': '1732181574197'  # 时间戳参数
@@ -24,7 +33,7 @@ headers = {
     'Accept': 'application/json',
     'Accept-Encoding': 'gzip, deflate',
     'Charset': 'UTF-8',
-    'Authorization': 'eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiIxM2MzN2Q2ZjYwNzE0MDgzOWFhNDJlZTg4YzQwYTgyMCIsImVtYWlsIjoibXVuaWNpcGFsdHBucnRAc3pld2VjLmNvbSIsIm5hbWUiOiLljZflsbHlkIzpmYbkupHpg5Hph5HmtpsiLCJ1c2VybmFtZSI6InpqdHRndmZiMyIsInBob25lTnVtYmVyIjoiMTM1MzA4MTU5ODMiLCJhY2NvdW50VHlwZSI6IlBFUlNPTkFMIiwidXNlcklkIjoiNjcwYWU3ZTZmMjdhNDg4YWI2NTNiNjFlMDE2MWFmOTEiLCJjb21wYW55SWQiOiIwY2ZlM2ZjM2ZlM2U0YWY0OGYxNDc4MzcwYmU2YTY4ZSIsImNvbXBhbnlOYW1lIjoi5rex5Zyz5biC5Lqk6YCa6L-Q6L6T5bGAIiwiZXhwIjoxNzMyMjE2MDExfQ.N5U4_sC4tX4cbunZ2rRna7fVuL1URRDNEM_mmCSxz9M.MTM1MzA4MTU5ODM=',
+    'Authorization': result,  # 使用读取的 result 作为 Authorization
     'Content-Type': 'application/json',
     'Connection': 'Keep-Alive',
     'appverify': 'md5=66c5bb1b6eb2d7d59bdb6000c45cdae5;ts=1732181574280',
@@ -44,7 +53,7 @@ data = {
 data_json = json.dumps(data)
 
 # 发送 POST 请求
-response = requests.post(url, headers=headers, params=params, data=data_json, verify='gy_api.pem')
+response = requests.post(url, headers=headers, params=params, data=data_json)#, verify='gy_api.pem')
 
 # 输出返回结果
 print(f'Status Code: {response.status_code}')  # 打印状态码
